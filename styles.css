@@ -1,0 +1,467 @@
+/* ---------------------------------------------------------------
+   Tokens
+----------------------------------------------------------------*/
+:root {
+  --paper: #FAF7F0;
+  --surface: #FFFFFF;
+  --ink: #1C1B1A;
+  --ink-soft: #5B5854;
+  --line: #DDD6C7;
+
+  --track-interfaces: #155048;
+  --track-systems: #6B4413;
+  --track-practice: #463876;
+  --track-keynote: #1C1B1A;
+
+  --focus: #C1440E;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono",
+    Menlo, monospace;
+}
+
+/* ---------------------------------------------------------------
+   Reset & base
+----------------------------------------------------------------*/
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+h1, h2, h3, p, ul { margin: 0; }
+ul { padding: 0; list-style: none; }
+button { font: inherit; color: inherit; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------
+   Focus visibility — one consistent, high-contrast ring
+   on every interactive element, everywhere in the page.
+----------------------------------------------------------------*/
+a, button {
+  outline: none;
+}
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------
+   Skip link
+----------------------------------------------------------------*/
+.skip-link {
+  position: absolute;
+  top: -3rem;
+  left: 1rem;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.75rem 1rem;
+  border-radius: 0 0 6px 6px;
+  z-index: 100;
+  text-decoration: none;
+  font-weight: 600;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* ---------------------------------------------------------------
+   Header
+----------------------------------------------------------------*/
+.site-header {
+  border-bottom: 1px solid var(--line);
+  padding: 1.5rem clamp(1rem, 4vw, 2.5rem);
+}
+.site-header-inner {
+  max-width: 68rem;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.35rem;
+}
+.site-title h1 {
+  font-size: clamp(1.75rem, 4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.site-tagline {
+  color: var(--ink-soft);
+  margin-top: 0.35rem;
+  max-width: 32rem;
+}
+.day-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+.day-nav a {
+  display: inline-block;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+  background: var(--surface);
+}
+.day-nav a:hover {
+  border-color: var(--ink);
+}
+
+/* ---------------------------------------------------------------
+   Main / day sections
+----------------------------------------------------------------*/
+main {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem) 3rem;
+}
+.day {
+  padding-top: 2.5rem;
+  scroll-margin-top: 1rem;
+}
+.day-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1rem;
+}
+.day-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.day-date {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+.track-key {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  flex-wrap: wrap;
+}
+.key-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.key-swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  display: inline-block;
+}
+.key-swatch[data-track-key="interfaces"] { background: var(--track-interfaces); }
+.key-swatch[data-track-key="systems"] { background: var(--track-systems); }
+.key-swatch[data-track-key="practice"] { background: var(--track-practice); }
+
+/* ---------------------------------------------------------------
+   Schedule — narrow-screen default: a single chronological list.
+   This is the base layout; the grid below is opt-in at wider
+   widths. Track is communicated with a label + colour, never
+   colour alone.
+----------------------------------------------------------------*/
+.schedule-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.track-heading,
+.hour {
+  display: none; /* decorative in the grid layout only */
+}
+
+.session {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--track-keynote);
+  border-radius: 4px;
+  padding: 0.7rem 0.85rem;
+  cursor: pointer;
+}
+.session[data-track-key="interfaces"] { border-left-color: var(--track-interfaces); }
+.session[data-track-key="systems"] { border-left-color: var(--track-systems); }
+.session[data-track-key="practice"] { border-left-color: var(--track-practice); }
+.session[data-track-key="keynote"] {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.session:hover { border-color: var(--ink); }
+.session[data-track-key="keynote"]:hover { border-color: var(--ink); }
+
+.session-time {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+.session[data-track-key="keynote"] .session-time { color: #D8D3C7; }
+
+.session-track {
+  display: inline-block;
+  margin-left: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  color: #fff;
+  background: var(--track-keynote);
+}
+.session[data-track-key="interfaces"] .session-track { background: var(--track-interfaces); }
+.session[data-track-key="systems"] .session-track { background: var(--track-systems); }
+.session[data-track-key="practice"] .session-track { background: var(--track-practice); }
+.session[data-track-key="keynote"] .session-track {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.session-title {
+  display: block;
+  margin-top: 0.35rem;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+
+.session-meta {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+.session[data-track-key="keynote"] .session-meta { color: #D8D3C7; }
+
+.break {
+  padding: 0.55rem 0.85rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px dashed var(--line);
+}
+
+/* ---------------------------------------------------------------
+   Grid layout — a real time x track timetable.
+   Enabled only once there is enough width for three legible
+   columns plus a time gutter (see README for the reasoning).
+----------------------------------------------------------------*/
+@media (min-width: 860px) {
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: 4.5rem repeat(3, 1fr);
+    column-gap: 0.75rem;
+    row-gap: 0;
+    align-items: stretch;
+  }
+  .schedule-grid[data-day="1"] {
+    grid-template-rows: auto repeat(33, minmax(1.55rem, auto));
+  }
+  .schedule-grid[data-day="2"] {
+    grid-template-rows: auto repeat(27, minmax(1.55rem, auto));
+  }
+
+  .track-heading {
+    display: block;
+    grid-row: var(--rs);
+    grid-column: var(--col);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--line);
+    align-self: end;
+  }
+  .hour {
+    display: block;
+    grid-row: var(--rs);
+    grid-column: 1;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    padding-top: 0.2rem;
+  }
+
+  .session {
+    grid-row: var(--rs) / span var(--sp);
+    grid-column: var(--col);
+    margin: 0.1rem 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.15rem;
+  }
+  /* Row tracks use minmax(_, auto), so a card with a long title is
+     free to grow taller rather than clip — the row below simply
+     shifts down slightly instead of losing content. */
+  .session-wide {
+    justify-content: center;
+    flex-direction: row;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0 0.75rem;
+  }
+  .session-title {
+    margin-top: 0;
+    font-size: 0.92rem;
+  }
+  .session-meta { margin-top: 0; }
+
+  .break {
+    grid-row: var(--rs) / span var(--sp);
+    grid-column: var(--col);
+    display: flex;
+    align-items: center;
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    margin: 0.1rem 0;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Dialog
+----------------------------------------------------------------*/
+dialog.session-dialog {
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  width: min(560px, 92vw);
+  max-height: min(80vh, 640px);
+  overflow-y: auto;
+  color: var(--ink);
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line);
+}
+dialog.session-dialog::backdrop {
+  background: rgba(28, 27, 26, 0.55);
+}
+@media (prefers-reduced-motion: no-preference) {
+  dialog.session-dialog {
+    animation: dialog-in 0.15s ease-out;
+  }
+}
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dialog-form {
+  padding: 1.5rem;
+}
+.dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.dialog-track {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+.dialog-close {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.dialog-close:hover {
+  border-color: var(--ink);
+}
+.session-dialog h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-top: 0.75rem;
+  line-height: 1.3;
+}
+.session-dialog h2:focus {
+  /* Focused programmatically on open (not a keyboard tab stop),
+     so this uses :focus rather than :focus-visible to guarantee
+     the ring always shows, regardless of the browser's heuristics
+     for script-triggered focus. */
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.dialog-meta {
+  margin-top: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+.dialog-speaker {
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+.dialog-abstract {
+  margin-top: 0.9rem;
+  line-height: 1.6;
+  max-width: 46ch;
+}
+
+/* ---------------------------------------------------------------
+   Footer
+----------------------------------------------------------------*/
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 1.5rem clamp(1rem, 4vw, 2.5rem);
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  text-align: center;
+}
